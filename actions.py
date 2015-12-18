@@ -193,7 +193,7 @@ def get_actions(cursor):
         if offer['offeree'] != player['id']:
             queue.quote('That offer wasn\'t made to you')
             return False
-        util.delete_offer(cursor, offer_id)
+        util.delete_offer(cursor, offer['id'])
         queue.quote('Offer successfully refused')
         return True
     
@@ -210,7 +210,7 @@ def get_actions(cursor):
         if offer['offerer'] != player['id']:
             queue.quote('You didn\'t make that offer')
             return False
-        util.delete_offer(cursor, offer_id)
+        util.delete_offer(cursor, offer['id'])
         queue.quote('Offer successfully cancelled')
         return True
         
