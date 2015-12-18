@@ -52,7 +52,7 @@ def main(db, log):
                 for span in action_spans:
                     action_lines += [line.strip() for line in span.strings if not re.match(r'^\s*$', line)]
                 log('Found {0} actions in post'.format(len(action_lines)))
-                for line in action_lines:
+                for line_number, line in enumerate(action_lines):
                     linequeue = MessageQueue(message_queue, line, post.author)
                     found_match = False
                     for regex, function in actions:
@@ -68,7 +68,7 @@ def main(db, log):
                     if not found_match:
                         linequeue.quote('I can\'t understand this. Did you misspell something or submit an invalid action? ')
                         sucessful = False
-                    if not successful:
+                    if not successful and line_number + 1 < len(lines):
                         message_queue.append('The rest of the actions in [url={0}]{1}\'s post[/url] have been skipped due to this error.'.format(post.url, post.author))
                         break
             cursor.execute('INSERT INTO posts VALUES (?, ?, ?)', (post_number, post.author, str(post.content_html)))
