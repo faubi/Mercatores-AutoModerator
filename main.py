@@ -242,10 +242,11 @@ def game_state_post(cursor):
         offerer = util.select(cursor, 'players', id=offer['offerer'])
         offeree = util.select(cursor, 'players', id=offer['offeree'])
         cursor.execute('SELECT item_id, quantity FROM offer_items WHERE offer_id=? AND quantity > 0', (offer['id'],))
-        offerer_items = ['{0} {1}'.format(quantity, util.select(cursor, 'items', id=item_id)['name']) for item_id, quantity in cursor.fetchall()]
+        offerer_items = util.format_items(cursor, cursor.fetchall())
         cursor.execute('SELECT item_id, -quantity FROM offer_items WHERE offer_id=? AND quantity < 0', (offer['id'],))
-        offeree_items = ['{0} {1}'.format(quantity, util.select(cursor, 'items', id=item_id)['name']) for item_id, quantity in cursor.fetchall()]
-        offers_list.append('{0}:[list]\n{1}: {2}\n{3}: {4}[/list]'.format(offer['name'], offerer['name'], ', '.join(offerer_items), offeree['name'], ', '.join(offeree_items)))
+        offeree_items = util.format_items(cursor, cursor.fetchall())
+        offers_list.append('{0}:[list]\n{1}: {2}\n{3}: {4}[/list]'.format(
+            offer['name'], offerer['name'], offerer_items, offeree['name'], offeree_items))
     messages.append(section_list('Open offers', offers_list))
     #Loans
     for title, accepted in (('Offered', 0),('Active', 1)):
