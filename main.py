@@ -67,7 +67,7 @@ def main(db, log):
                             break
                     if not found_match:
                         linequeue.quote('I can\'t understand this. Did you misspell something or submit an invalid action? ')
-                        sucessful = False
+                        successful = False
                     if not successful and line_number + 1 < len(lines):
                         message_queue.append('The rest of the actions in [url={0}]{1}\'s post[/url] have been skipped due to this error.'.format(post.url, post.author))
                         break
