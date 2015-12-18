@@ -140,7 +140,7 @@ def get_actions(cursor):
             queue.quote(str(e))
             return False
         item_count.subtract(item_count_2)
-        cursor.execute('INSERT INTO offers (offerer, offeree, name) VALUES (?, ?, ?, ?)', (player['id'], offeree['id'], offer_name))
+        cursor.execute('INSERT INTO offers (offerer, offeree, name) VALUES (?, ?, ?)', (player['id'], offeree['id'], offer_name))
         offer_id = cursor.lastrowid
         for item, quantity in item_count.items():
             cursor.execute('INSERT INTO offer_items (offer_id, item_id, quantity) VALUES (?, ?, ?)', (offer_id, item, quantity))
