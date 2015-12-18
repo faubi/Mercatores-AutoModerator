@@ -169,9 +169,9 @@ def get_actions(cursor):
         offerer = select('players', id=offer['offerer'])
         offer_items = select('offer_items', offer_id=offer['id'])
         for offer_item in offer_items:
-            itempayer = offerer if quantity >= 0 else player
+            itempayer = offerer if offer_item['quantity'] >= 0 else player
             inv_quantity = util.get_inventory_quantity(cursor, itempayer['id'], item_id)
-            if abs(quantity) > inv_quantity:
+            if abs(offer_item['quantity']) > inv_quantity:
                 queue.quote('{0} doesn\'t have enough {1}'.format(itempayer['name'], select('items', id=item_id)['name']))
                 return False
         capacity = sum(select('items', id=item['id'])['capacity']*item['quantity'] for item in offer_items)
