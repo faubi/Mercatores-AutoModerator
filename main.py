@@ -137,9 +137,6 @@ def do_new_turn(cursor, log):
     #TODO loan defaults
     cursor.execute('DELETE FROM price_changes WHERE ends <=?', (turn_number,))
     cursor.execute('DELETE FROM current_events WHERE ends <=?', (turn_number,))
-    #cursor.execute('INSERT INTO current_events (myth_power_id, ends) SELECT myth_power_id, ends FROM queued_events WHERE starts <=?', (turn_number,))
-    #cursor.execute('DELETE FROM queued_events WHERE starts <=?', (turn_number,))
-    # TODO apply current events
     queued_events = util.select(cursor, 'queued_events', starts=turn_number)
     for queued_event in queued_events:
         cursor.execute('DELETE FROM queued_events WHERE id=?', (queued_event['id'],))
@@ -157,16 +154,6 @@ def do_new_turn(cursor, log):
                     break
                 quantity = min(free_capacity//item_capacity, quantity)
                 util.give_items(cursor, player_id, item_id, quantity)
-        #if event['type'] in (1, 2):
-            #Price change event
-            #price_change = util.select(cursor, 'price_change_events', event_id=event['id'])
-            #ends = turn_number + price_change['duration']
-            #if event['type'] == 1:
-                # Region price change
-                #region_id = util.select(cursor, 'price_change_event_regions', queued_event_id=queued_event['id'])['region_id']
-                #for item in util.select_all(cursor, 'items'):
-                    #cursor.execute('INSERT INTO price_changes (region_id, item_id, buy_change, sell_change, ends) VALUES (?, ?, ?, ?, ?)',
-                        #(region_id, item['id'], price_change['buy_change'], price_change['sell_change'], ends))
         elif event['type'] == 1:
             cursor.execute(
                 """INSERT INTO price_changes (region_id, item_id, buy_change, sell_change, ends)
