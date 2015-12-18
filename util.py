@@ -167,8 +167,8 @@ def count_items(cursor, item_list):
         itemrow = select(cursor, 'items', name=item)
         if not itemrow:
             raise ValueError('Unknown item: {0}'.format(item))
-            items[itemrow['id']] += quantity
-        return items
+        items[itemrow['id']] += quantity
+    return items
     
 def count_items_str(cursor, items_str):
     return count_items(cursor, parse_items(items_str))
