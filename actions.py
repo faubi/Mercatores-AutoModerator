@@ -153,7 +153,7 @@ def get_actions(cursor):
         queue.quote('Offer successfully made')
         return True
     
-    @action('Accept offer {offer_name}')
+    @action('Accept (?:offer )?{offer_name}')
     def accept_offer(queue, username, offer_name):
         player = select('players', name=username)
         if not player or player['phase'] != 1:
@@ -186,7 +186,7 @@ def get_actions(cursor):
         queue.quote('Offer successfully completed')
         return True
     
-    @action('Refuse offer {offer_name}')
+    @action('Refuse (?:offer )?{offer_name}')
     def refuse_offer(queue, username, offer_name):
         player = select('players', name=username)
         if not player:
@@ -203,7 +203,7 @@ def get_actions(cursor):
         queue.quote('Offer successfully refused')
         return True
     
-    @action('Cancel offer {offer_name}')
+    @action('Cancel (?:offer )?{offer_name}')
     def cancel_offer(queue, username, offer_name):
         player = select('players', name=username)
         if not player:
