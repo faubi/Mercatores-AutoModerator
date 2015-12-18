@@ -68,7 +68,7 @@ def main(db, log):
                     if not found_match:
                         linequeue.quote('I can\'t understand this. Did you misspell something or submit an invalid action? ')
                         successful = False
-                    if not successful and line_number + 1 < len(lines):
+                    if not successful and line_number + 1 < len(action_lines):
                         message_queue.append('The rest of the actions in [url={0}]{1}\'s post[/url] have been skipped due to this error.'.format(post.url, post.author))
                         break
             cursor.execute('INSERT INTO posts VALUES (?, ?, ?)', (post_number, post.author, str(post.content_html)))
