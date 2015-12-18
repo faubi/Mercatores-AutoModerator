@@ -230,7 +230,7 @@ def game_state_post(cursor):
         offeree = util.select(cursor, 'players', id=offer['offeree'])
         cursor.execute('SELECT item_id, quantity FROM offer_items WHERE offer_id=? AND quantity > 0', (offer['id'],))
         offerer_items = util.format_items(cursor, cursor.fetchall())
-        cursor.execute('SELECT item_id, -quantity FROM offer_items WHERE offer_id=? AND quantity < 0', (offer['id'],))
+        cursor.execute('SELECT item_id, -quantity AS quantity FROM offer_items WHERE offer_id=? AND quantity < 0', (offer['id'],))
         offeree_items = util.format_items(cursor, cursor.fetchall())
         offers_list.append('{0}:[list]\n{1}: {2}\n{3}: {4}[/list]'.format(
             offer['name'], offerer['name'], offerer_items, offeree['name'], offeree_items))
