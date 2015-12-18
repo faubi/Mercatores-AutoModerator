@@ -5,3 +5,4 @@ To use, clone into a new directory and run `python3 mercatores.py --setup`. It w
 
 Note that this is still in development and contains a large number of bugs which may prevent it from working at all.
 
+This requires Python 3, as well as the Python libraries [requests](https://pypi.python.org/pypi/requests), [dateutil](https://pypi.python.org/pypi/python-dateutil), and [Beautiful Soup 4](https://pypi.python.org/pypi/beautifulsoup4/4.3.2).
