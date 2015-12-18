@@ -235,6 +235,9 @@ def get_actions(cursor):
         except ValueError:
             queue.quote('Invalid integer: {0}'.format(quantity))
             return False
+        if quantity < 0:
+            queue.quote('You can\'t dump negative items')
+            return False
         inv_quantity = util.get_inventory_quantity(cursor, player['id'], item['id'])
         if quantity > inv_quantity:
             queue.quote('You don\'t have that many of that item')
