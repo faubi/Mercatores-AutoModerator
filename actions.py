@@ -72,6 +72,9 @@ def get_actions(cursor):
         except ValueError:
             queue.quote('Invalid integer: {0}'.format(quantity))
             return False
+        if quantity < 0:
+            queue.quote('You can\'t buy negative items')
+            return False
         price = util.get_price(cursor, region['id'], item['id'], buying=True)*quantity
         if price > util.get_coins(cursor, player['id']):
             queue.quote('You can\'t afford that')
@@ -108,6 +111,9 @@ def get_actions(cursor):
             quantity = int(quantity)
         except ValueError:
             queue.quote('Invalid integer: {0}'.format(quantity))
+            return False
+        if quantity < 0:
+            queue.quote('You can\'t sell negative items')
             return False
         price = util.get_price(cursor, region['id'], item['id'], buying=False)*quantity
         inv_quantity = util.get_inventory_quantity(cursor, player['id'], item['id'])
@@ -278,7 +284,7 @@ def get_actions(cursor):
             queue.quote('{0} is not an integer'.format(turn_number))
             return False
         current_turn = util.get_global(cursor, 'turn_number')
-        if current_turn <= turn_number:
+        if current_turn >= turn_number:
             queue.quote('Turn {0} has already started'.format(turn_number))
             return False
         if select('loans', name=loan_name):
