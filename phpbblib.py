@@ -136,7 +136,7 @@ class Post:
         self.content_html = post_div.find(class_='content')
         self.content_text = self.content_html.text
         self.author, self.post_date = re.match('by (.*?) » (.*) ', post_div.find(class_='author').text).groups()
-        self.url = self.thread.forum.url + '/viewtopic.php?t={0}#{1}'.format(self.thread.thread_id, self.post_id)
+        self.url = self.thread.forum.url + '/viewtopic.php?t={0}#p{1}'.format(self.thread.thread_id, self.post_id)
         
 class AuthError(Exception):
     pass
