@@ -117,7 +117,7 @@ def give_coins(cursor, player_id, quantity):
 
 def delete_offer(cursor, offer_id):
     cursor.execute('DELETE FROM offers WHERE id=?', (offer_id,))
-    cursor.execute('DELETE FROM offer_items WHERE id=?', (offer_id,))
+    cursor.execute('DELETE FROM offer_items WHERE offer_id=?', (offer_id,))
 
 def get_global(cursor, name):
     cursor.execute('SELECT {0} FROM globals'.format(name))
