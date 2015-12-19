@@ -119,7 +119,7 @@ def main(db, log):
         turn_number = util.get_global(cursor, 'turn_number')
         messages = ['[size=200]Turn {0} Begins[/size]\n'.format(turn_number+1)]
         try:
-            do_new_turn(cursor)
+            do_new_turn(cursor, log)
         except Exception as e:
             message_queue.append('An exception occurred while handling the turn transition:[code]{0}[/code]'.format(traceback.format_exc(chain=False)))
         else:
@@ -144,7 +144,7 @@ def do_new_turn(cursor, log):
     for queued_event in queued_events:
         cursor.execute('DELETE FROM queued_events WHERE id=?', (queued_event['id'],))
         event = util.select(cursor, 'events', id=queued_event['event_id'])
-        if event['type'] == 0:
+        if event['event_type'] == 0:
             # Give items event
             player_id = util.select(cursor, 'give_items_event_players', queued_event_id=queued_event['id'])['player_id']
             cursor.execute('DELETE FROM give_items_event_players WHERE queued_event_id=?' (queued_event['id'],))
@@ -157,7 +157,7 @@ def do_new_turn(cursor, log):
                     break
                 quantity = min(free_capacity//item_capacity, quantity)
                 util.give_items(cursor, player_id, item_id, quantity)
-        elif event['type'] == 1:
+        elif event['event_type'] == 1:
             cursor.execute(
                 """INSERT INTO price_changes (region_id, item_id, buy_change, sell_change, ends)
                 SELECT pcer.region_id, items.id, pce.buy_change, pce.sell_change, pce.duration+globals.turn_number
@@ -165,14 +165,14 @@ def do_new_turn(cursor, log):
                 WHERE pce.event_id=? AND pcer.queued_event_id=?""",
                 (event['id'], queued_event['id']))
             cursor.execute('DELETE FROM price_change_event_regions WHERE queued_event_id=?', (queued_event['id'],))
-        elif event['type'] == 2:
+        elif event['event_type'] == 2:
             cursor.execute(
                 """INSERT INTO price_changes (region_id, item_id, buy_change, sell_change, ends)
                 SELECT regions.id, pcei.item_id, pce.buy_change, pce.sell_change, pce.duration+globals.turn_number
                 FROM price_change_events AS pce JOIN price_change_event_items AS pcei JOIN regions JOIN globals
                 WHERE pce.event_id=? AND pcei.event_id=?""",
                 (event['id'], event['id']))
-        if event['type'] == 1 or event['type'] == 2:
+        if event['event_type'] == 1 or event['event_type'] == 2:
             cursor.execute(
                 """INSERT INTO current_events (message, ends) SELECT ?, pce.duration+globals.turn_number
                 FROM price_change_events AS pce JOIN globals
