@@ -486,7 +486,7 @@ def get_actions(cursor):
         for item_id, quantity in offer_items.items():
             util.give_items(cursor, player['id'], item_id, -quantity)
             util.give_myth_items(cursor, player['id'], item_id, god['id'], quantity)
-        myth_power = util.get_current_power(cursor, god)
+        myth_power = util.get_current_power(cursor, god['id'])
         if myth_power and not myth_power['purchased']:
             power_items = select_all('myth_power_prices', myth_power_id=myth_power['id'])
             myth_offered = util.get_myth_offered(cursor, player['id'], god['id'])
