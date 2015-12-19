@@ -291,7 +291,7 @@ def get_actions(cursor):
         for offer_item in offer_items:
             util.give_items(cursor, offerer['id'], offer_item['item_id'], -offer_item['quantity'])
             util.give_items(cursor, player['id'], offer_item['item_id'], offer_item['quantity'])
-        util.delete_offer(cursor, offer_id)
+        util.delete_offer(cursor, offer['id'])
         queue.quote('Offer successfully completed')
         return True
     
