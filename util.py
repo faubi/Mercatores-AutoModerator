@@ -135,6 +135,7 @@ def get_office_price(cursor, region_id):
 def give_offices(cursor, player_id, region_id, level, quantity):
     if select(cursor, 'offices', player_id=player_id, region_id=region_id, level=level):
         cursor.execute('UPDATE offices SET quantity=quantity+? WHERE player_id=? AND region_id=? AND level=?', (quantity, player_id, region_id, level))
+        cursor.execute('DELETE FROM offices WHERE quantity=0 AND player_id=? AND region_id=? AND level=?', (player_id, region_id, level))
     else:
         cursor.execute('INSERT INTO offices (quantity, player_id, region_id, level) VALUES (?, ?, ?, ?)', (quantity, player_id, region_id, level))
         
