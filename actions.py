@@ -288,9 +288,9 @@ def get_actions(cursor):
         if capacity > util.get_free_capacity(cursor, capacityuser['id']):
             queue.quote('{0} doesn\'t have enough free capacity'.format(capacityuser['name']))
             return False
-        for item_id, quantity in offer_items:
-            util.give_items(cursor, offerer['id'], item_id, -quantity)
-            util.give_items(cursor, player['id'], item_id, quantity)
+        for offer_item in offer_items:
+            util.give_items(cursor, offerer['id'], offer_item['item_id'], -offer_item['quantity'])
+            util.give_items(cursor, player['id'], offer_item['item_id'], offer_item['quantity'])
         util.delete_offer(cursor, offer_id)
         queue.quote('Offer successfully completed')
         return True
