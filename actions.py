@@ -364,7 +364,7 @@ def get_actions(cursor):
         cursor.execute('UPDATE players SET phase=2 WHERE id=?', (player['id'],))
         offers = select_all('offers', offerer=player['id'])
         for offer in offers:
-            util.delete_offer(offer['id'])
+            util.delete_offer(cursor, offer['id'])
         cursor.execute('DELETE FROM loans WHERE offerer=? AND accepted=0', (player['id'],))
         queue.quote('You have moved to phase 2. Your pending offers and loans have been cancelled.')
         return True
