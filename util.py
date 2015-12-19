@@ -185,6 +185,7 @@ def format_items(cursor, items):
     return ', '.join(item_text)
 
 def bbcode_list(elements):
+    elements = list(elements)
     if not elements:
         return ''
     return '[list]' + '\n'.join('[*]'+element+'[/*]' for element in elements) + '[/list]'
