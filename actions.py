@@ -296,6 +296,7 @@ def get_actions(cursor):
         cursor.execute('INSERT INTO loans (offerer, offeree, coins, interest, due_by, accepted, name) VALUES (?, ?, ?, ?, ?, ?, ?)', 
             (player['id'], borrower['id'], quantity, interest, turn_number, False, loan_name))
         queue.quote('Loan successfully offered')
+        return True
     
     @action('Accept loan {loan_name}')
     def accept_loan(queue, username, loan_name):
