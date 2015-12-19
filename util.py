@@ -151,7 +151,7 @@ def get_post_count(cursor):
 def parse_items(items_str):
     item_list = re.split(r'\s*(?:,\s*and|and|,)\s*', items_str)
     for index, item in enumerate(item_list):
-        item_match = re.match('([0-9]+|nothing|none)\s+(.*)', item)
+        item_match = re.match('(-[0-9]+|nothing|none|no)\s+(.*)', item)
         if not item_match:
             raise ValueError('Unable to parse "{0}"'.format(item)+' as {quantity} {item}')
         item_list[index] = item_match.groups()
@@ -164,6 +164,8 @@ def count_items(cursor, item_list):
             quantity = 0
         else:
             quantity = int(quantity)
+        if quantity < 0:
+            raise ValueError('Quantity cannot be negative')
         itemrow = select(cursor, 'items', name=item)
         if not itemrow:
             raise ValueError('Unknown item: {0}'.format(item))
