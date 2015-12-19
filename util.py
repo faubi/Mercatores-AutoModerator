@@ -150,10 +150,12 @@ def get_post_count(cursor):
     return cursor.fetchone()[0]
 
 def parse_items(items_str):
+    if items_str.lower() == 'nothing':
+        return []
     item_list = re.split(r'\s*(?:,\s*and|and|,)\s*', items_str)
     for index, item in enumerate(item_list):
-        item_match = re.match('(-?[0-9]+|nothing|none|no)\s+(.*)', item)
-        if not item_match:
+        item_match = re.match('(-?[0-9]+)\s+(.*)', item)
+        if item_match:
             raise ValueError('Unable to parse "{0}"'.format(item)+' as {quantity} {item}')
         item_list[index] = item_match.groups()
     return item_list
