@@ -221,7 +221,7 @@ def game_state_post(cursor):
         for god in gods:
             myth_items = util.select_all(cursor, 'myth_offered', player_id=player['id'], god_id=god['id'])
             if myth_items:
-                god_items.append('{0} to {1}'.format(god['name'], util.format_items(cursor, myth_items)))
+                god_items.append('{1} to {0}'.format(god['name'], util.format_items(cursor, myth_items)))
         player_myth.append('{0}: {1}'.format(player['name'], ', '.join(god_items)))
     messages.append(section_list('Offered to gods', player_myth))
     #Open Offers
