@@ -283,7 +283,7 @@ def get_actions(cursor):
             if abs(offer_item['quantity']) > inv_quantity:
                 queue.quote('{0} doesn\'t have enough {1}'.format(itempayer['name'], select('items', id=offer_item['item_id'])['name']))
                 return False
-        capacity = sum(select('items', id=item['id'])['capacity']*item['quantity'] for item in offer_items)
+        capacity = sum(select('items', id=item['item_id'])['capacity']*item['quantity'] for item in offer_items)
         capacityuser = player if capacity >= 0 else offerer
         if capacity > util.get_free_capacity(cursor, capacityuser['id']):
             queue.quote('{0} doesn\'t have enough free capacity'.format(capacityuser['name']))
