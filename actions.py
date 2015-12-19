@@ -124,6 +124,112 @@ def get_actions(cursor):
         util.give_items(cursor, player['id'], item['id'], -quantity)
         queue.quote('You have successfully sold {0} {1} to {2}'.format(quantity, item['name'], region['name']))
         return True
+        
+    @action('Lend {quantity} coins to {borrower_name} with {interest} coins interest due turn {turn_number} as {loan_name}')
+    def lend(queue, username, quantity, borrower_name, interest, turn_number, loan_name):
+        player = select('players', name=username)
+        if not player or player['phase'] != 1:
+            queue.quote('You can only make loan offers in phase 1')
+            return False
+        try:
+            quantity = int(quantity)
+        except ValueError:
+            queue.quote('Invalid integer: {0}'.format(quantity))
+            return False
+        try:
+            interest = int(interest)
+        except ValueError:
+            queue.quote('Invalid integer: {0}'.format(interest))
+            return False
+        borrower = select('players', name=borrower_name)
+        if not borrower:
+            queue.quote('Unknown player: {0}'.format(borrower_name))
+            return False
+        if player['id'] == borrower['id']:
+            queue.quote('You can\'t make a loan to yourself')
+            return False
+        try:
+            turn_number = int(turn_number)
+        except ValueError:
+            queue.quote('{0} is not an integer'.format(turn_number))
+            return False
+        current_turn = util.get_global(cursor, 'turn_number')
+        if current_turn >= turn_number:
+            queue.quote('Turn {0} has already started'.format(turn_number))
+            return False
+        if select('loans', name=loan_name):
+            queue.quote('There is already a loan with that name')
+            return False
+        cursor.execute('INSERT INTO loans (offerer, offeree, coins, interest, due_by, accepted, name) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+            (player['id'], borrower['id'], quantity, interest, turn_number, False, loan_name))
+        queue.quote('Loan successfully offered')
+        return True
+    
+    @action('Accept loan {loan_name}')
+    def accept_loan(queue, username, loan_name):
+        player = select('players', name=username)
+        if not player or player['phase'] != 1:
+            queue.quote('You can only accept loans in phase 1')
+            return False
+        loan = select('loans', name=loan_name)
+        if not loan:
+            queue.quote('There is no loan with that name')
+            return False
+        if loan['accepted']:
+            queue.quote('That loan offer has already been accepted')
+            return False
+        if loan['offeree'] != player['id']:
+            queue.quote('That loan offer wasn\'t made to you')
+            return False
+        lender = select('players', id=loan['offerer'])
+        if loan['coins'] > util.get_coins(cursor, lender['id']):
+            queue.quote('{0} doesn\'t have enough coins'.format(lender['name']))
+            return False
+        util.give_coins(cursor, lender['id'], -loan['coins'])
+        util.give_coins(cursor, player['id'], loan['coins'])
+        cursor.execute('UPDATE loans SET accepted=1 WHERE id=?', (loan['id'],))
+        queue.quote('Loan successfully accepted')
+        return True
+    
+    @action('Refuse loan {loan_name}')
+    def refuse_loan(queue, username, loan_name):
+        player = select('players', name=username)
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        loan = select('loans', name=loan_name)
+        if not loan:
+            queue.quote('There is no loan with that name')
+            return False
+        if loan['accepted']:
+            queue.quote('That loan offer has already been accepted')
+            return False
+        if loan['offeree'] != player['id']:
+            queue.quote('That loan offer wasn\'t made to you')
+            return False
+        cursor.execute('DELETE FROM loans WHERE id=?', (loan['id'],))
+        queue.quote('Loan succesfully refused')
+        return True
+    
+    @action('Cancel loan {loan_name}')
+    def cancel_loan(queue, username, loan_name):
+        player = select('players', name=username)
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        loan = select('loans', name=loan_name)
+        if not loan:
+            queue.quote('There is no loan with that name')
+            return False
+        if loan['accepted']:
+            queue.quote('That loan offer has already been accepted')
+            return False
+        if loan['offerer'] != player['id']:
+            queue.quote('That loan offer wasn\'t made by you')
+            return False
+        cursor.execute('DELETE FROM loans WHERE id=?', (loan['id'],))
+        queue.quote('Loan succesfully cancelled')
+        return True
     
     #@action(r'Trade {items1} for {items2>(?:(?:[0-9]+|an?) .*?(?:, | and |, and )?)*) with {player} as {name}')
     @action('Offer {items_1} for {items_2} to {offeree_name} as {offer_name}')
@@ -262,112 +368,6 @@ def get_actions(cursor):
             util.delete_offer(offer)
         cursor.execute('DELETE FROM loans WHERE offerer=? AND accepted=0', (player['id'],))
         queue.quote('You have moved to phase 2. Your pending offers and loans have been cancelled.')
-        return True
-        
-    @action('Lend {quantity} coins to {borrower_name} with {interest} coins interest due turn {turn_number} as {loan_name}')
-    def lend(queue, username, quantity, borrower_name, interest, turn_number, loan_name):
-        player = select('players', name=username)
-        if not player or player['phase'] != 1:
-            queue.quote('You can only make loan offers in phase 1')
-            return False
-        try:
-            quantity = int(quantity)
-        except ValueError:
-            queue.quote('Invalid integer: {0}'.format(quantity))
-            return False
-        try:
-            interest = int(interest)
-        except ValueError:
-            queue.quote('Invalid integer: {0}'.format(interest))
-            return False
-        borrower = select('players', name=borrower_name)
-        if not borrower:
-            queue.quote('Unknown player: {0}'.format(borrower_name))
-            return False
-        if player['id'] == borrower['id']:
-            queue.quote('You can\'t make a loan to yourself')
-            return False
-        try:
-            turn_number = int(turn_number)
-        except ValueError:
-            queue.quote('{0} is not an integer'.format(turn_number))
-            return False
-        current_turn = util.get_global(cursor, 'turn_number')
-        if current_turn >= turn_number:
-            queue.quote('Turn {0} has already started'.format(turn_number))
-            return False
-        if select('loans', name=loan_name):
-            queue.quote('There is already a loan with that name')
-            return False
-        cursor.execute('INSERT INTO loans (offerer, offeree, coins, interest, due_by, accepted, name) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-            (player['id'], borrower['id'], quantity, interest, turn_number, False, loan_name))
-        queue.quote('Loan successfully offered')
-        return True
-    
-    @action('Accept loan {loan_name}')
-    def accept_loan(queue, username, loan_name):
-        player = select('players', name=username)
-        if not player or player['phase'] != 1:
-            queue.quote('You can only accept loans in phase 1')
-            return False
-        loan = select('loans', name=loan_name)
-        if not loan:
-            queue.quote('There is no loan with that name')
-            return False
-        if loan['accepted']:
-            queue.quote('That loan offer has already been accepted')
-            return False
-        if loan['offeree'] != player['id']:
-            queue.quote('That loan offer wasn\'t made to you')
-            return False
-        lender = select('players', id=loan['offerer'])
-        if loan['coins'] > util.get_coins(cursor, lender['id']):
-            queue.quote('{0} doesn\'t have enough coins'.format(lender['name']))
-            return False
-        util.give_coins(cursor, lender['id'], -loan['coins'])
-        util.give_coins(cursor, player['id'], loan['coins'])
-        cursor.execute('UPDATE loans SET accepted=1 WHERE id=?', (loan['id'],))
-        queue.quote('Loan successfully accepted')
-        return True
-    
-    @action('Refuse loan {loan_name}')
-    def refuse_loan(queue, username, loan_name):
-        player = select('players', name=username)
-        if not player:
-            queue.quote('You must join the game to do that')
-            return False
-        loan = select('loans', name=loan_name)
-        if not loan:
-            queue.quote('There is no loan with that name')
-            return False
-        if loan['accepted']:
-            queue.quote('That loan offer has already been accepted')
-            return False
-        if loan['offeree'] != player['id']:
-            queue.quote('That loan offer wasn\'t made to you')
-            return False
-        cursor.execute('DELETE FROM loans WHERE id=?', (loan['id'],))
-        queue.quote('Loan succesfully refused')
-        return True
-    
-    @action('Cancel loan {loan_name}')
-    def cancel_loan(queue, username, loan_name):
-        player = select('players', name=username)
-        if not player:
-            queue.quote('You must join the game to do that')
-            return False
-        loan = select('loans', name=loan_name)
-        if not loan:
-            queue.quote('There is no loan with that name')
-            return False
-        if loan['accepted']:
-            queue.quote('That loan offer has already been accepted')
-            return False
-        if loan['offerer'] != player['id']:
-            queue.quote('That loan offer wasn\'t made by you')
-            return False
-        cursor.execute('DELETE FROM loans WHERE id=?', (loan['id'],))
-        queue.quote('Loan succesfully cancelled')
         return True
     
     @action('Repay loan {loan_name}')
