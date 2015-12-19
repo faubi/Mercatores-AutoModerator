@@ -197,7 +197,7 @@ def text_table(table, dividers=(), sep=' | '):
     if dividers:
         divider = '-' * (len(sep)*(columns-1) + sum(column_widths))
         for i, line_number in enumerate(dividers):
-            lines.insert(line_number, divider)
+            lines.insert(line_number+1, divider)
     return '\n'.join(lines)
     
     
