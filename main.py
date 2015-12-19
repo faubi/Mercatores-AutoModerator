@@ -140,7 +140,7 @@ def do_new_turn(cursor, log):
     #TODO loan defaults
     cursor.execute('DELETE FROM price_changes WHERE ends <=?', (turn_number,))
     cursor.execute('DELETE FROM current_events WHERE ends <=?', (turn_number,))
-    queued_events = util.select(cursor, 'queued_events', starts=turn_number)
+    queued_events = util.select_all(cursor, 'queued_events', starts=turn_number)
     for queued_event in queued_events:
         cursor.execute('DELETE FROM queued_events WHERE id=?', (queued_event['id'],))
         event = util.select(cursor, 'events', id=queued_event['event_id'])
