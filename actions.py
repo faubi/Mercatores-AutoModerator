@@ -13,7 +13,7 @@ def get_actions(cursor):
     select = selector.select
     select_all = selector.select_all
             
-    @action('Join')
+    @action('(?:Join|/in)')
     def join(queue, username):
         if select('players', name=username):
             queue.quote('You cannot join because you are already playing!')
