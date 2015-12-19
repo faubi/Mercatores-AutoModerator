@@ -47,7 +47,7 @@ def get_actions(cursor):
         queue.quote('You now have an office in {0}'.format(region['name']))
         return True
     
-    @action('Buy {quantity} {item_name} from {region_name}')
+    @action('Buy {quantity} {item_name} (?:in|from) {region_name}')
     def buy_item(queue, username, quantity, item_name, region_name):
         player = select('players', name=username)
         if not player or player['phase'] != 1:
@@ -87,7 +87,7 @@ def get_actions(cursor):
         queue.quote('You have successfully bought {0} {1} from {2}'.format(quantity, item['name'], region['name']))
         return True
         
-    @action('Sell {quantity} {item_name} to {region_name}')
+    @action('Sell {quantity} {item_name} (?:in|to) {region_name}')
     def sell_item(queue, username, quantity, item_name, region_name):
         player = select('players', name=username)
         if not player or player['phase'] != 2:
