@@ -471,7 +471,7 @@ def get_actions(cursor):
             return False
         god = select('gods', name=god_name)
         if not god:
-            queue.quote('Unknown god: {0}'.format(region_name))
+            queue.quote('Unknown god: {0}'.format(god_name))
             return False
         offer_items = util.count_items_str(cursor, items)
         for item_id, quantity in offer_items.items():
