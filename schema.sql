@@ -133,7 +133,7 @@ CREATE TABLE params (
 
 CREATE TABLE regions (
     id integer primary key,
-    name text
+    name text COLLATE nocase
 );
 
 CREATE TABLE items (
