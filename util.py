@@ -109,7 +109,7 @@ def give_myth_items(cursor, player_id, item_id, god_id, quantity):
     if select(cursor, 'myth_offered', player_id=player_id, item_id=item_id, god_id=god_id):            
         cursor.execute('UPDATE myth_offered SET quantity=quantity+? WHERE player_id=? AND item_id=? AND god_id=?', (quantity, player_id, item_id, god_id))
     else:
-        cursor.execute('INSERT INTO myth_offered (quantity, player_id, item_id, god_id) VALUES (?, ?, ?, /)', (quantity, player_id, item_id, god_id))
+        cursor.execute('INSERT INTO myth_offered (quantity, player_id, item_id, god_id) VALUES (?, ?, ?, ?)', (quantity, player_id, item_id, god_id))
 
 def give_coins(cursor, player_id, quantity):
     coins_id = get_param(cursor, 'coins_id')
