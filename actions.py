@@ -139,6 +139,9 @@ def get_actions(cursor):
         if select('offers', name=offer_name):
             queue.quote('There is already an offer with that name')
             return False
+        if player['id'] == offeree['id']:
+            queue.quote('You can\'t make an offer to yourself')
+            return False
         try:
             item_count = util.count_items_str(cursor, items_1)
             item_count_2 = util.count_items_str(cursor, items_2)
@@ -280,6 +283,9 @@ def get_actions(cursor):
         borrower = select('players', name=borrower_name)
         if not borrower:
             queue.quote('Unknown player: {0}'.format(borrower_name))
+            return False
+        if player['id'] == borrower['id']:
+            queue.quote('You can\'t make a loan to yourself')
             return False
         try:
             turn_number = int(turn_number)
