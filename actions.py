@@ -276,7 +276,7 @@ def get_actions(cursor):
             queue.quote('That offer wasn\'t made to you')
             return False
         offerer = select('players', id=offer['offerer'])
-        offer_items = select('offer_items', offer_id=offer['id'])
+        offer_items = select_all('offer_items', offer_id=offer['id'])
         for offer_item in offer_items:
             itempayer = offerer if offer_item['quantity'] >= 0 else player
             inv_quantity = util.get_inventory_quantity(cursor, itempayer['id'], item_id)
