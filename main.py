@@ -295,10 +295,11 @@ def game_state_post(cursor):
     upgrade_prices = []
     cursor.execute('SELECT MAX(level) FROM office_levels')
     max_level = cursor.fetchone()[0]
-    for level in range(2, max_level+1):
+    for level in range(1, max_level+1):
         upgrade_price = util.select_all(cursor, 'upgrade_prices', level=level)
-        upgrade_prices.append('Upgrade to level {0}: {1}'.format(level, util.format_items(cursor, upgrade_price)))
-    messages.append(section_list('Office Upgrade Prices', upgrade_prices))
+        upgrade_prices.append('Level {0}[list]Capacity:{2}\nUpgrade price:{1}[/list]'.format(level, util.format_items(cursor, upgrade_price),
+            util.select(cursor, 'office_levels', level=level)['capacity']))
+    messages.append(section_list('Office Levels', upgrade_prices))
     #Unused Myth
     unused_myth_list = []
     for player in players:
