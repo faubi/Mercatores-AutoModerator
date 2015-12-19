@@ -462,7 +462,7 @@ def get_actions(cursor):
     @action('Offer {items} to {god_name}')
     def offer_to_god(queue, username, items, god_name):
         powers_start = util.get_param(cursor, 'myth_powers_start')
-        if util.get_global('turn_number') < powers_start:
+        if util.get_global(cursor, 'turn_number') < powers_start:
             queue.quote('Myth powers can\'t be used until turn {1}'.format(powers_start))
             return False            
         player = select('players', name=username)
@@ -473,7 +473,7 @@ def get_actions(cursor):
         if not god:
             queue.quote('Unknown god: {0}'.format(region_name))
             return False
-        offer_items = util.count_item_str(items)
+        offer_items = util.count_item_str(cursor, items)
         for item_id, quantity in offer_items.items():
             inv_item = select('inventories', player_id=player['id'], item_id=item_id)
             if not inv_item or inv_item['quantity'] < quantity:
@@ -482,7 +482,7 @@ def get_actions(cursor):
         for item_id, quantity in offer_items.items():
             util.give_items(cursor, player['id'], item_id, -quantity)
             util.give_myth_items(cursor, player['id'], item_id, god['id'], quantity)
-        myth_power = util.get_current_power(god)
+        myth_power = util.get_current_power(cursor, god)
         if myth_power and not myth_power['purchased']:
             power_items = select_all('myth_power_prices', myth_power_id=myth_power['id'])
             myth_offered = util.get_myth_offered(cursor, player['id'], god['id'])
