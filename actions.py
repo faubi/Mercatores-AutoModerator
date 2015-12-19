@@ -479,8 +479,7 @@ def get_actions(cursor):
             queue.quote(str(e))
             return False            
         for item_id, quantity in offer_items.items():
-            inv_item = select('inventories', player_id=player['id'], item_id=item_id)
-            if not inv_item or inv_item['quantity'] < quantity:
+            if util.get_inventory_quantity(cursor, player['id'], item_id) < quantity:
                 queue.quote('You don\'t have that many {0}'.format(select('items', id=item_id)['name']))
                 return False
         for item_id, quantity in offer_items.items():
