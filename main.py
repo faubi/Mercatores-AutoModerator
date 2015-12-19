@@ -237,7 +237,7 @@ def game_state_post(cursor):
     messages.append(section_list('Open offers', offers_list))
     #Loans
     for title, accepted in (('Offered', 0),('Active', 1)):
-        loans = util.select_all(cursor, 'loans', accepted=0)
+        loans = util.select_all(cursor, 'loans', accepted=accepted)
         loans_list = []
         for loan in loans:
             offerer = util.select(cursor, 'players', id=loan['offerer'])
