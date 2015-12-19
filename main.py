@@ -131,7 +131,7 @@ def main(db, log):
     forum.logout()
     
 def do_new_turn(cursor, log):
-    cursor.execute('INSERT INTO turn_changes (post_number) VALUES (?)', (util.get_post_count(),))
+    cursor.execute('INSERT INTO turn_changes (post_number) VALUES (?)', (util.get_post_count(cursor),))
     cursor.execute('UPDATE players SET phase=1 WHERE phase=2')
     cursor.execute('DELETE FROM offers')
     cursor.execute('UPDATE globals SET turn_number=turn_number+1')
