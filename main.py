@@ -116,7 +116,7 @@ def main(db, log):
     
     if new_turn:
         log('Updating turn')
-        messages = ['[size=200]Turn {0} Begins[/size]\n'.format(turn_number)]
+        messages = ['[size=200]Turn {0} Begins[/size]\n'.format(turn_number+1)]
         try:
             do_new_turn(cursor)
         except Exception as e:
