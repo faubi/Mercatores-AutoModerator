@@ -297,7 +297,7 @@ def game_state_post(cursor):
     max_level = cursor.fetchone()[0]
     for level in range(1, max_level+1):
         upgrade_price = util.select_all(cursor, 'upgrade_prices', level=level)
-        upgrade_prices.append('Level {0}[list]Capacity:{2}\nUpgrade price:{1}[/list]'.format(level, util.format_items(cursor, upgrade_price),
+        upgrade_prices.append('Level {0}[list]Capacity: {2}\nUpgrade price: {1}[/list]'.format(level, util.format_items(cursor, upgrade_price),
             util.select(cursor, 'office_levels', level=level)['capacity']))
     messages.append(section_list('Office Levels', upgrade_prices))
     #Unused Myth
