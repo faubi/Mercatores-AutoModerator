@@ -461,7 +461,7 @@ def get_actions(cursor):
     
     @action('Offer {items} to {god_name}')
     def offer_to_god(queue, username, items, god_name):
-        powers_start = util.get_param('myth_powers_start')
+        powers_start = util.get_param(cursor, 'myth_powers_start')
         if util.get_global('turn_number') < powers_start:
             queue.quote('Myth powers can\'t be used until turn {1}'.format(powers_start))
             return False            
