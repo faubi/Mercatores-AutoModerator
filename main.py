@@ -204,8 +204,8 @@ def game_state_post(cursor):
             region_name = util.select(cursor, 'regions', id=office['region_id'])['name']
             for _ in range(office['quantity']):
                 office_text.append('{0} (level {1})'.format(region_name, office['level']))
-        player_offices.append('{0}: {1}. Total Capacity: {2}'.format(player['name'], ', '.join(office_text), 
-            util.get_total_capacity(cursor, player['id'])))
+        player_offices.append('{0} (phase {3}): {1}. Used/Total Capacity: {4}/{2}'.format(player['name'], ', '.join(office_text), 
+            util.get_total_capacity(cursor, player['id']), player['phase'], util.get_used_capacity(cursor, player['id'])))
     messages.append(section_list('Player offices', player_offices))
     #Player Resources
     player_resources = []
