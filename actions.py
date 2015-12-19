@@ -441,7 +441,7 @@ def get_actions(cursor):
             if not office:
                 queue.quote('You do not have any offices in {0}'.format(region['name']))
                 return False
-        old_level = office['level']+1
+        old_level = office['level']
         if not select('office_levels', level=old_level+1):
             queue.quote('That office is already at the maximum level')
             return False
