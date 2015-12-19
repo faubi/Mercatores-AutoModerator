@@ -242,7 +242,7 @@ def game_state_post(cursor):
         for loan in loans:
             offerer = util.select(cursor, 'players', id=loan['offerer'])
             offeree = util.select(cursor, 'players', id=loan['offeree'])        
-            loans_list.append('{0}:[list]{1} to {2}: {3} coins, {4} interest, due turn {5}'.format(
+            loans_list.append('{0}:[list]{1} to {2}: {3} coins, {4} interest, due turn {5}[/list]'.format(
                 loan['name'], offerer['name'], offeree['name'], loan['coins'], loan['interest'], loan['due_by']))
         messages.append(section_list(title+' Loans', loans_list))
     if turn_number >= util.get_param(cursor, 'myth_powers_start'):
