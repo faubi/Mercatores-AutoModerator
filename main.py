@@ -82,6 +82,9 @@ def main(db, log):
                     message_queue.extend(game_state_post(cursor))
                 except Exception as e:
                     message_queue.append('An exception occurred while generating the game state summary:[code]{0}[/code]'.format(traceback.format_exc(chain=False)))
+                    
+    log('Database cleanup')
+    util.cleanup(cursor)
     
     def make_posts(messages):    
         character_limit = 10000
@@ -123,8 +126,7 @@ def main(db, log):
         log('Posting new turn')
         make_posts(messages)
         
-    log('Cleaning up and logging out')
-    util.cleanup(cursor)
+    log('Logging out')
     forum.logout()
     
 def do_new_turn(cursor, log):
