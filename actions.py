@@ -31,7 +31,10 @@ def get_actions(cursor):
     @action('Take office in {region_name}')
     def take_office(queue, username, region_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 0:
+        if not player:
+            queue.quote('You must join the game first.')
+            return False
+        if player['phase'] != 0:
             queue.quote('You already have a starting office.')
             return False
         region = select('regions', name=region_name)
@@ -50,7 +53,10 @@ def get_actions(cursor):
     @action('Buy {quantity} {item_name} (?:in|from) {region_name}')
     def buy_item(queue, username, quantity, item_name, region_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 1:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 1:
             queue.quote('You can only buy items in phase 1')
             return False
         item = select('items', name=item_name)
@@ -90,7 +96,10 @@ def get_actions(cursor):
     @action('Sell {quantity} {item_name} (?:in|to) {region_name}')
     def sell_item(queue, username, quantity, item_name, region_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 2:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 2:
             queue.quote('You can only sell items in phase 2')
             return False
         item = select('items', name=item_name)
@@ -128,7 +137,10 @@ def get_actions(cursor):
     @action('Lend {quantity} coins to {borrower_name} with {interest} coins interest due turn {turn_number} as {loan_name}')
     def lend(queue, username, quantity, borrower_name, interest, turn_number, loan_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 1:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 1:
             queue.quote('You can only make loan offers in phase 1')
             return False
         try:
@@ -168,7 +180,10 @@ def get_actions(cursor):
     @action('Accept loan {loan_name}')
     def accept_loan(queue, username, loan_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 1:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 1:
             queue.quote('You can only accept loans in phase 1')
             return False
         loan = select('loans', name=loan_name)
@@ -235,7 +250,10 @@ def get_actions(cursor):
     @action('Offer {items_1} for {items_2} to {offeree_name} as {offer_name}')
     def make_offer(queue, username, items_1, items_2, offeree_name, offer_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 1:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 1:
             queue.quote('You can only make offers in phase 1')
             return False
         offeree = select('players', name=offeree_name)
@@ -265,7 +283,10 @@ def get_actions(cursor):
     @action('Accept (?:offer )?{offer_name}')
     def accept_offer(queue, username, offer_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 1:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 1:
             queue.quote('You can only accept offers in phase 1')
             return False
         offer = select('offers', name=offer_name)
@@ -358,7 +379,10 @@ def get_actions(cursor):
     @action('Move to phase 2')
     def phase_2(queue, username):
         player = select('players', name=username)
-        if not player or player['phase'] != 1:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 1:
             queue.quote('You can only do that in phase 1')
             return False
         cursor.execute('UPDATE players SET phase=2 WHERE id=?', (player['id'],))
@@ -372,7 +396,10 @@ def get_actions(cursor):
     @action('Repay loan {loan_name}')
     def repay_loan(queue, username, loan_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 1:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 1:
             queue.quote('You can only repay loans in phase 1')
             return False
         loan = select('loans', name=loan_name)
@@ -399,7 +426,10 @@ def get_actions(cursor):
     @action('Build office in {region_name}')
     def build_office(queue, username, region_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 2:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 2:
             queue.quote('You can only build offices in phase 2')
             return False
         region = select('regions', name=region_name)
@@ -418,7 +448,10 @@ def get_actions(cursor):
     @action('Upgrade(?: level {level})? office in {region_name}')
     def upgrade_office(queue, username, level, region_name):
         player = select('players', name=username)
-        if not player or player['phase'] != 2:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 2:
             queue.quote('You can only upgrade offices in phase 2')
             return False
         region = select('regions', name=region_name)
@@ -466,7 +499,10 @@ def get_actions(cursor):
             queue.quote('Myth powers can\'t be used until turn {1}'.format(powers_start))
             return False            
         player = select('players', name=username)
-        if not player or player['phase'] != 2:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 2:
             queue.quote('You can only offer to gods in phase 2')
             return False
         god = select('gods', name=god_name)
@@ -504,7 +540,10 @@ def get_actions(cursor):
     @action('Use {myth_power_name}(?: on {target})?')
     def use_power(queue, username, myth_power_name, target):
         player = select('players', name=username)
-        if not player or player['phase'] != 2:
+        if not player:
+            queue.quote('You must join the game to do that')
+            return False
+        if player['phase'] != 2:
             queue.quote('You can only use myth powers in phase 2')
             return False
         cursor.execute('SELECT * FROM myth_powers WHERE id=(SELECT myth_power_id FROM unused_myth WHERE player_id=?) AND name=?', (player['id'], myth_power_name))
