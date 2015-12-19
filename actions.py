@@ -362,10 +362,9 @@ def get_actions(cursor):
             queue.quote('You can only do that in phase 1')
             return False
         cursor.execute('UPDATE players SET phase=2 WHERE id=?', (player['id'],))
-        cursor.execute('SELECT offer_id FROM offers WHERE offerer=?', (player['id'],))
-        offers = cursor.fetchall()
+        offers = select_all('offers', offerer=player['id'])
         for offer in offers:
-            util.delete_offer(offer)
+            util.delete_offer(offer['id'])
         cursor.execute('DELETE FROM loans WHERE offerer=? AND accepted=0', (player['id'],))
         queue.quote('You have moved to phase 2. Your pending offers and loans have been cancelled.')
         return True
