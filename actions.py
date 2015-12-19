@@ -495,9 +495,8 @@ def get_actions(cursor):
                 cursor.execute('INSERT INTO unused_myth (player_id, myth_power_id) VALUES (?, ?)', (player['id'], myth_power['id']))
                 queue.quote('Successfully offered to {0}. You now have {1}. Make sure to use it before the next turn'.format(god['name'], myth_power['name']))
                 return True
-        else:
-            queue.quote('Successfully offered to {0}. No myth power obtained'.format(god['name']))
-            return True
+        queue.quote('Successfully offered to {0}. No myth power obtained'.format(god['name']))
+        return True
     
     @action('Use {myth_power_name}(?: on {target})?')
     def use_power(queue, username, myth_power_name, target):
