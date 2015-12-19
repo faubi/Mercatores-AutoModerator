@@ -473,7 +473,11 @@ def get_actions(cursor):
         if not god:
             queue.quote('Unknown god: {0}'.format(god_name))
             return False
-        offer_items = util.count_items_str(cursor, items)
+        try:
+            offer_items = util.count_items_str(cursor, items)
+        except ValueError as e:
+            queue.quote(str(e))
+            return False            
         for item_id, quantity in offer_items.items():
             inv_item = select('inventories', player_id=player['id'], item_id=item_id)
             if not inv_item or inv_item['quantity'] < quantity:
