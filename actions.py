@@ -452,7 +452,7 @@ def get_actions(cursor):
             if not inv_item or inv_item['quantity'] < quantity:
                 queue.quote('You don\'t have enough {0}'.format(select('items', id=item_id)['name']))
                 return False
-        for item_id, quantity in offer_items:
+        for item_id, quantity in upgrade_items:
             util.give_items(cursor, player['id'], item_id, -quantity)
         util.give_offices(cursor, player['id'], region['id'], old_level, -1)
         util.give_offices(cursor, player['id'], region['id'], old_level+1, 1)
