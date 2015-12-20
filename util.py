@@ -209,7 +209,7 @@ def text_table(table, dividers=(), sep=' | '):
     return '\n'.join(lines)
     
 def get_player(cursor, name, phase=None):
-    player = select(cursor, 'players', name=username)
+    player = select(cursor, 'players', name=name)
     if not player:
         raise ActionError('You must join the game to do that')
     if phase != 0 and player['phase'] == 0:
@@ -219,13 +219,13 @@ def get_player(cursor, name, phase=None):
     return player
     
 def get_region(cursor, name):
-    region = select(cursor, 'regions', name=region)
+    region = select(cursor, 'regions', name=name)
     if not region:
         raise ActionError('Unknown region: {0}'.format(name))
     return region
     
 def get_item(cursor, name):
-    item = select(cursor, 'items', name=region)
+    item = select(cursor, 'items', name=name)
     if not item:
         raise ActionError('Unknown item: {0}'.format(name))
     return item
