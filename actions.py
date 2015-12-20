@@ -359,7 +359,7 @@ def get_actions(cursor):
                         god['name'], myth_power['name'])
         return 'Successfully offered to {0}. No myth power obtained'.format(god['name'])
     
-    @action('Use {myth_power_name}(?: on {target})?')
+    @action('Use(?: power)? {myth_power_name}(?: on {target})?')
     def use_power(queue, username, myth_power_name, target):
         player = util.get_player(cursor, username, phase=2)
         cursor.execute('SELECT * FROM myth_powers WHERE id=(SELECT myth_power_id FROM unused_myth WHERE player_id=?) '
