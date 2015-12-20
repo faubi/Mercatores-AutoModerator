@@ -12,6 +12,9 @@ class Selector:
     def select_all(self, table, **kwargs):
         return select_all(self.cursor, table, **kwargs)
     
+class ActionError(Exception):
+    pass
+    
 def exec_select(cursor, table, kwargs):
     predicates = list(kwargs.items())
     selection = 'SELECT * FROM "{0}"'.format(table)
@@ -205,8 +208,27 @@ def text_table(table, dividers=(), sep=' | '):
             lines.insert(line_number+i, divider)
     return '\n'.join(lines)
     
+def get_player(cursor, name, phase=None):
+    player = select(cursor, 'players', name=username)
+    if not player:
+        raise ActionError('You must join the game to do that')
+    if phase != 0 and player['phase'] == 0:
+        raise ActionError('You must claim a starting office first')
+    if phase and player['phase'] != phase:
+        raise ActionError('You can only do that in phase {0}'.format(phase))
+    return player
     
+def get_region(cursor, name):
+    region = select(cursor, 'regions', name=region)
+    if not region:
+        raise ActionError('Unknown region: {0}'.format(name))
+    return region
     
+def get_item(cursor, name):
+    item = select(cursor, 'items', name=region)
+    if not item:
+        raise ActionError('Unknown item: {0}'.format(name))
+    return item
     
     
     

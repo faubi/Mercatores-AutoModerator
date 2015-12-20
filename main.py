@@ -1,23 +1,11 @@
 import datetime, re, traceback, random
 import phpbblib, util
 from actions import get_actions
-    
-class MessageQueue:
-    
-    def __init__(self, queue, action, player):
-        self.queue = queue
-        self.action = action
-        self.player = player
         
-    def append(self, message):
-        self.queue.append(message)
-        
-    def quote(self, message):
-        self.queue.append('[quote="{0}"][b]{1}[/b][/quote]{2}\n'.format(self.player, self.action, message))
+def append_quote(queue, player, action, message):
+    return queue.append('[quote="{0}"][b]{1}[/b][/quote]{2}\n'.format(player, action, message))
 
 def main(db, log):
-    with open('/tmp/merca', 'w') as merca:
-        pass
     cursor = db.cursor()
     
     log('Logging into forum')
@@ -47,27 +35,30 @@ def main(db, log):
         for post in posts:
             if post.author.casefold() != username.casefold() and post_number != 0:
                 log('Handling post {0}'.format(post_number))
-                action_spans = [span for span in post.content_html.find_all('span') if span.has_attr('style') and 'font-weight: bold' in span['style']]
+                action_spans = [span for span in post.content_html.find_all('span')
+                    if span.has_attr('style') and 'font-weight: bold' in span['style']]
                 action_lines = []
                 for span in action_spans:
                     action_lines += [line.strip() for line in span.strings if not re.match(r'^\s*$', line)]
                 log('Found {0} actions in post'.format(len(action_lines)))
                 for line_number, line in enumerate(action_lines):
                     linequeue = MessageQueue(message_queue, line, post.author)
-                    found_match = False
+                    successful = False
                     for regex, function in actions:
                         match = regex.match(line)
                         if match:
-                            found_match = True
                             try:
-                                successful = function(linequeue, post.author, **match.groupdict())
+                                message = function(linequeue, post.author, **match.groupdict())
+                                append_quote(message_queue, post.author, line, message))
+                                successful = True
+                            except util.ActionError as e:
+                                append_quote(message_queue, post.author, line, str(e))
                             except Exception as e:
-                                linequeue.quote('An exception occured while processing this action:[code]{0}[/code]'.format(traceback.format_exc(chain=False)))
-                                successful = False
+                                append_quote(message_queue, post.author, line,
+                                    'An exception occured while processing this action:[code]{0}[/code]'.format(traceback.format_exc(chain=False)))
                             break
-                    if not found_match:
-                        linequeue.quote('I can\'t understand this. Did you misspell something or submit an invalid action? ')
-                        successful = False
+                    else:
+                        append_quote(message_queue, post.author, line, 'I can\'t understand this. Did you misspell something or submit an invalid action? ')
                     if not successful and line_number + 1 < len(action_lines):
                         message_queue.append('The rest of the actions in [url={0}]{1}\'s post[/url] have been skipped due to this error.'.format(post.url, post.author))
                         break
