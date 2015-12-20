@@ -296,7 +296,7 @@ def game_state_post(cursor):
     unused_myth_list = []
     for player in players:
         powers = util.select_all(cursor, 'unused_myth', player_id=player['id'])
-        unused_myth_list.append('{0}: {1}'.format(player['name'], ', '.join(util.select(cursor, 'myth_powers', id=power['id'])['name'] for power in powers)))
+        unused_myth_list.append('{0}: {1}'.format(player['name'], ', '.join(util.select(cursor, 'myth_powers', id=power['myth_power_id'])['name'] for power in powers)))
     messages.append(section_list('Unused Myth Powers', unused_myth_list))
     return messages
 
