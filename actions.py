@@ -349,7 +349,7 @@ def get_actions(cursor):
                 myth_offered = util.get_myth_offered(cursor, player['id'], god['id'])
                 have_items = True
                 for power_item in power_items:
-                    if power_item['quantity'] > myth_offered[item['id']]:
+                    if power_item['quantity'] > myth_offered[power_item['item_id']]:
                         have_items = False
                         break
                 if have_items:
