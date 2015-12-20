@@ -342,18 +342,20 @@ def get_actions(cursor):
             util.give_items(cursor, player['id'], item_id, -quantity)
             util.give_myth_items(cursor, player['id'], item_id, god['id'], quantity)
         myth_power = util.get_current_power(cursor, god['id'])
-        if myth_power and not myth_power['purchased']:
-            power_items = select_all('myth_power_prices', myth_power_id=myth_power['id'])
-            myth_offered = util.get_myth_offered(cursor, player['id'], god['id'])
-            have_items = True
-            for power_item in power_items:
-                if power_item['quantity'] > myth_offered[item['id']]:
-                    have_items = False
-                    break
-            if have_items:
-                cursor.execute('INSERT INTO unused_myth (player_id, myth_power_id) VALUES (?, ?)', (player['id'], myth_power['id']))
-                return 'Successfully offered to {0}. You now have {1}. Make sure to use it before the next turn'.format(
-                    god['name'], myth_power['name'])
+        if myth_power:
+            available_myth = util.select(cursor, 'available_myth', myth_power_id = myth_power['id'])
+            if not available_myth['purchased']:
+                power_items = select_all('myth_power_prices', myth_power_id=myth_power['id'])
+                myth_offered = util.get_myth_offered(cursor, player['id'], god['id'])
+                have_items = True
+                for power_item in power_items:
+                    if power_item['quantity'] > myth_offered[item['id']]:
+                        have_items = False
+                        break
+                if have_items:
+                    cursor.execute('INSERT INTO unused_myth (player_id, myth_power_id) VALUES (?, ?)', (player['id'], myth_power['id']))
+                    return 'Successfully offered to {0}. You now have {1}. Make sure to use it before the next turn'.format(
+                        god['name'], myth_power['name'])
         return 'Successfully offered to {0}. No myth power obtained'.format(god['name'])
     
     @action('Use {myth_power_name}(?: on {target})?')
