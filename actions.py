@@ -345,6 +345,7 @@ def get_actions(cursor):
         if myth_power:
             available_myth = util.select(cursor, 'available_myth', myth_power_id = myth_power['id'])
             if not available_myth['purchased']:
+                cursor.execute('UPDATE available_myth SET purchased=1 WHERE myth_power_id=?', (myth_power['id'],))
                 power_items = select_all('myth_power_prices', myth_power_id=myth_power['id'])
                 myth_offered = util.get_myth_offered(cursor, player['id'], god['id'])
                 have_items = True
