@@ -145,7 +145,7 @@ def give_offices(cursor, player_id, region_id, level, quantity):
 def cleanup(cursor):
     cursor.execute('DELETE FROM inventories WHERE quantity <= 0')
     cursor.execute('DELETE FROM offices WHERE quantity <= 0')
-    cursor.execute('DELETE FROM offer_items WHERE quantity <= 0')
+    cursor.execute('DELETE FROM offer_items WHERE quantity == 0')
     cursor.execute('DELETE FROM myth_offered WHERE quantity <= 0')
         
 def get_post_count(cursor):
