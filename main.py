@@ -49,7 +49,7 @@ def main(db, log):
                         if match:
                             try:
                                 message = function(linequeue, post.author, **match.groupdict())
-                                append_quote(message_queue, post.author, line, message))
+                                append_quote(message_queue, post.author, line, message)
                                 successful = True
                             except util.ActionError as e:
                                 append_quote(message_queue, post.author, line, str(e))
