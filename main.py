@@ -42,13 +42,12 @@ def main(db, log):
                     action_lines += [line.strip() for line in span.strings if not re.match(r'^\s*$', line)]
                 log('Found {0} actions in post'.format(len(action_lines)))
                 for line_number, line in enumerate(action_lines):
-                    linequeue = MessageQueue(message_queue, line, post.author)
                     successful = False
                     for regex, function in actions:
                         match = regex.match(line)
                         if match:
                             try:
-                                message = function(linequeue, post.author, **match.groupdict())
+                                message = function(None, post.author, **match.groupdict())
                                 append_quote(message_queue, post.author, line, message)
                                 successful = True
                             except util.ActionError as e:
