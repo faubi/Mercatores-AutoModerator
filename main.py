@@ -246,7 +246,8 @@ def game_state_post(cursor):
             if myth_power:
                 power_price = util.select_all(cursor, 'myth_power_prices', myth_power_id=myth_power['id'])
                 power_text = '{0}: {1} ({2}): {3}'.format(god['name'], myth_power['name'], util.format_items(cursor, power_price), myth_power['description'])
-                if myth_power['purchased']:
+                available_myth = util.select(cursor, 'available_myth', myth_power_id = myth_power['id']
+                if available_myth['purchased']:
                     power_text = '[s]' + power_text + '[/s]'
                 myth_powers,append(power_text)
         messages.append(section_list('Current Myth Powers', myth_powers))
