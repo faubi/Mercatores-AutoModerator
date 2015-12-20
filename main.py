@@ -249,7 +249,7 @@ def game_state_post(cursor):
                 available_myth = util.select(cursor, 'available_myth', myth_power_id = myth_power['id'])
                 if available_myth['purchased']:
                     power_text = '[s]' + power_text + '[/s]'
-                myth_powers,append(power_text)
+                myth_powers.append(power_text)
         messages.append(section_list('Current Myth Powers', myth_powers))
         #Current Events
         events = util.select_all(cursor, 'current_events')
