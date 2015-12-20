@@ -101,7 +101,7 @@ def get_myth_offered(cursor, player_id, god_id):
     items = select_all(cursor, 'myth_offered', player_id=player_id, god_id=god_id)
     item_counter = Counter()
     for item in items:
-        item_counter[item['id']] = item['quantity']
+        item_counter[item['item_id']] = item['quantity']
     return item_counter
 
 def get_coins(cursor, player_id):
