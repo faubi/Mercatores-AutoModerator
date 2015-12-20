@@ -400,6 +400,10 @@ def get_actions(cursor):
         cursor.execute('UPDATE queued_events WHERE id=? SET message=?', (queued_event_id, message))
         cursor.execute('DELETE FROM unused_myth WHERE myth_power_id=? AND player_id=?', (myth_power['id'], player['id']))
         return '{0} used {1}. It will take effect turn {2}'.format(myth_power['name'], ' on '+target if target else '', start_turn)
+    
+    @action('Do nothing')
+    def use_power(queue, username):
+        return 'Successfully did nothing'
         
     return actions
         
