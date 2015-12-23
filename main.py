@@ -111,7 +111,7 @@ def main(db, log):
         try:
             do_new_turn(cursor, log)
         except Exception as e:
-            message_queue.append('An exception occurred while handling the turn transition:[code]{0}[/code]'.format(traceback.format_exc(chain=False)))
+            messages.append('An exception occurred while handling the turn transition:[code]{0}[/code]'.format(traceback.format_exc(chain=False)))
         else:
             messages.extend(game_state_post(cursor))
         log('Posting new turn')
