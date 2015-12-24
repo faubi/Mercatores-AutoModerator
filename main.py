@@ -107,7 +107,7 @@ def main(db, log):
     if new_turn:
         log('Updating turn')
         turn_number = util.get_global(cursor, 'turn_number')
-        messages = ['[size=200]Turn {0} Begins[/size]\n'.format(turn_number+1)]
+        messages = ['[size=200]Turn {0} Begins[/size]'.format(turn_number+1)]
         try:
             do_new_turn(cursor, log)
         except Exception as e:
