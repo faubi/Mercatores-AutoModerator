@@ -76,11 +76,11 @@ def main(db, log):
     log('Database cleanup')
     util.cleanup(cursor)
     
-    def make_posts(messages):    
+    def make_posts(messages):
         character_limit = 10000
         current_post = ''
                 
-        for message in message_queue:
+        for message in messages:
             new_length = len(message) + len(current_post)
             if current_post != '':
                 new_length += 1
@@ -104,7 +104,7 @@ def main(db, log):
             message_queue.append('An exception occurred while generating the game state summary:[code]{0}[/code]'.format(traceback.format_exc(chain=False)))
         make_posts(message_queue)
     
-    if True:
+    if new_turn:
         log('Updating turn')
         turn_number = util.get_global(cursor, 'turn_number')
         messages = ['[size=200]Turn {0} Begins[/size]\n'.format(turn_number+1)]
