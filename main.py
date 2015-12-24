@@ -104,7 +104,7 @@ def main(db, log):
             message_queue.append('An exception occurred while generating the game state summary:[code]{0}[/code]'.format(traceback.format_exc(chain=False)))
         make_posts(message_queue)
     
-    if new_turn:
+    if True:
         log('Updating turn')
         turn_number = util.get_global(cursor, 'turn_number')
         messages = ['[size=200]Turn {0} Begins[/size]\n'.format(turn_number+1)]
